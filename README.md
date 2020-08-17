@@ -1,6 +1,5 @@
 # Autonomous Drone AirSim
-![image](https://github.com/OrShemesh1992/Autonomous_Drone_AirSim/blob/master/image/first.png)
-
+![image](https://user-images.githubusercontent.com/44946807/90451881-84edae80-e0f5-11ea-9e40-d4ef2afff62b.png)
 
 
 ## Authors
