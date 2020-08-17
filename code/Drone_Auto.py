@@ -1,10 +1,8 @@
 
 import airsim
 import numpy as np
-import numpy
-import os
 import cv2
-import time
+import math
 
 def set_segmentation_colors():
     found = client.simSetSegmentationObjectID("[\w]*", 0, True)
@@ -226,7 +224,7 @@ if __name__ == "__main__":
 
     # Fly given velocity vector for 1 seconds
     duration = 1
-    speed = 3
+    speed = 1
 
     vx = speed
     vy = 0
@@ -237,30 +235,30 @@ if __name__ == "__main__":
         stop+=1
         if stop == 50:
             break
-        if count==4:
+        if count==2:
             count=0
         result=image_proc_algorithm()
         print(result)
-        if  result<4:
+        if  result<5:
             if count==0:
                 vx = 0
                 vy = -speed
                 print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=270")
                 client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
                                                 airsim.YawMode(False, 270))
-            elif count==1:
-                vx = -speed
-                vy = 0
-                print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=180")
-                client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
-                                                airsim.YawMode(False, 180))
-            elif count == 2:
-                vx = 0
-                vy = speed
-                print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=90")
-                client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
-                                                airsim.YawMode(False, 90))
-            elif count == 3:
+            # elif count==1:
+            #     vx = -speed
+            #     vy = 0
+            #     print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=180")
+            #     client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
+            #                                     airsim.YawMode(False, 180))
+            # elif count == 2:
+            #     vx = 0
+            #     vy = speed
+            #     print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=90")
+            #     client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
+            #                                     airsim.YawMode(False, 90))
+            elif count == 1:
                 vx = speed
                 vy = 0
                 print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=0")
@@ -269,7 +267,16 @@ if __name__ == "__main__":
             count += 1
         else:
             print("moving by Position")
-            client.moveToPositionAsync(-636.9027099609375,1013.6842041015625, -20, 2)
+            # client.cancelLastTask()
+            x=client.getMultirotorState().kinematics_estimated.position.x_val
+            y = client.getMultirotorState().kinematics_estimated.position.y_val
+            x1=106.04059600830078
+            y1=-97.93598175048828
+            z1=-4.983806133270264
+            dgree=math.degrees(math.atan((y-y1)/(x-x1)))
+            print(dgree)
+            # dgree=
+            client.moveToPositionAsync(x1,y1,z,1,yaw_mode=airsim.YawMode(False, dgree))
 
     airsim.wait_key('Press any key to reset to original state')
     client.armDisarm(False)
