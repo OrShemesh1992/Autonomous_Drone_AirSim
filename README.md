@@ -114,4 +114,6 @@
 
 ## Sources:
 
-* 
+* https://stackoverflow.com/questions/57576686/how-to-overlay-segmented-image-on-top-of-main-image-in-python
+* https://www.microsoft.com/en-us/ai/ai-lab-airsim-drones#:~:text=AI%20AirSim%20Drones,or%20people%20in%20the%20images.
+* https://www.youtube.com/watch?v=-WfTr1-OBGQ
