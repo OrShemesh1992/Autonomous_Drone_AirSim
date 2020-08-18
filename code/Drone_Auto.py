@@ -144,26 +144,25 @@ def Escape_algorithm():
     client.takeoffAsync().join()
 
     # z of -20 is 20 meters above the original launch point.
-    z = -20
+    z = -15
 
     # Fly given velocity vector for 5 seconds
-    duration = 5
-    speed = 3
+    duration = 7
+    speed  =2
 
     vx = speed
     vy = 0
 
     count = 0
-    stop = 0
+    point=0
+    move=True
     while True:
-        stop += 1
-        if stop == 50:
-            break
         if count == 2:
             count = 0
         result = image_proc_algorithm()
         print(result)
         if result < 5:
+            move=True
             if count == 0:
                 vx = 0
                 vy = -speed
@@ -183,11 +182,46 @@ def Escape_algorithm():
             print("moving by Position")
             x = client.getMultirotorState().kinematics_estimated.position.x_val
             y = client.getMultirotorState().kinematics_estimated.position.y_val
-            x1 = 106.04059600830078
-            y1 = -97.93598175048828
-            z1 = -4.983806133270264
-            dgree = math.degrees(math.atan((y - y1) / (x - x1)))
-            client.moveToPositionAsync(x1, y1, z, 1, yaw_mode=airsim.YawMode(False, dgree))
+
+            if -122<float(x) and float(x)<-120 and -122<float(y) and float(y) <-119:
+                point=1
+                move = True
+            elif float(x) <-185 and float(x)>-186 and float(y) > -13 and float(y) <-14:
+                point=2
+                move = True
+            elif float(x) < 140.5 and float(x) > 140 and float(y) < 48.5 and float(y) > 48:
+                point = 3
+                move = True
+            elif float(x) < 106.5 and float(x) > 106 and float(y) > -97.5 and float(y) < -98:
+                client.landAsync().join()
+            if move==True:
+                move=False
+                if point ==0:
+                    print("point 1")
+                    x1= -121.9201431274414
+                    y1=-120.98756408691406
+                    dgree = 180+math.degrees(math.atan((y - y1) / (x - x1)))
+                    client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
+                elif point==1:
+                    print("point 2")
+                    x1= -185.52687072753906
+                    y1= -13.707509994506836
+                    dgree = 180+math.degrees(math.atan((y - y1) / (x - x1)))
+                    client.moveToPositionAsync(x1, y1, z, speed ,yaw_mode=airsim.YawMode(False, dgree))
+                elif point==2:
+                    print("point 3")
+                    x1= 140.02157592773438
+                    y1= 48.068817138671875
+                    dgree = math.degrees(math.atan((y - y1) / (x - x1)))
+                    print(dgree)
+                    client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
+                elif point==3:
+                    print("point 4")
+                    x1= 106.04059600830078
+                    y1= -97.93598175048828
+                    dgree = math.degrees(math.atan((y - y1) / (x - x1)))
+                    print(dgree)
+                    client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
 
     airsim.wait_key('Press any key to reset to original state')
     client.armDisarm(False)
@@ -199,3 +233,18 @@ def Escape_algorithm():
 if __name__ == "__main__":
     client = airsim.MultirotorClient()
     Escape_algorithm()
+
+    # 3
+    # <Vector3r> {   'x_val': 140.02157592773438,
+    #     'y_val': 48.068817138671875,
+    #     'z_val': -19.981088638305664}
+
+    # 2
+    # <Vector3r> {   'x_val': -185.52687072753906,
+    #     'y_val': -13.707509994506836,
+    #     'z_val': -19.98116683959961}
+
+    # 1
+    # <Vector3r> {   'x_val': -118.46541595458984,
+    #     'y_val': -122.095947265625,
+    #     'z_val': -19.98649787902832}

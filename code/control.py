@@ -10,8 +10,8 @@ client.enableApiControl(True)
 client.armDisarm(True)
 client.takeoffAsync()
 
-# z of -5 is 5 meters above the original launch point.
-z = -5
+# z of -20 is 20 meters above the original launch point.
+z = -20
 
 # Fly given velocity vector for 1 seconds
 duration = 1
