@@ -3,6 +3,7 @@ import airsim
 import numpy as np
 import cv2
 import math
+import time
 #set segmentation colors
 def set_segmentation_colors():
     found = client.simSetSegmentationObjectID("[\w]*", 0, True)
@@ -144,15 +145,15 @@ def Escape_algorithm():
     client.takeoffAsync().join()
 
     # z of -20 is 20 meters above the original launch point.
-    z = -15
+    z = -20
 
     # Fly given velocity vector for 5 seconds
-    duration = 7
-    speed  =2
+    duration = 5
+    speed  =1
 
     vx = speed
     vy = 0
-
+    dgree=0
     count = 0
     point=0
     move=True
@@ -163,88 +164,69 @@ def Escape_algorithm():
         print(result)
         if result < 5:
             move=True
-            if count == 0:
-                vx = 0
-                vy = -speed
-                #turn left from (0,0,0)
-                print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=270")
-                client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
-                                            airsim.YawMode(False, 270))
-            elif count == 1:
-                vx = speed
-                vy = 0
-                # straight from (0,0,0)
-                print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=0")
-                client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
-                                            airsim.YawMode(False, 0))
+            if point==0:
+                if count == 0:
+                    vx = 0
+                    vy = -speed
+                    # turn left
+                    print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=270")
+                    client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
+                                                airsim.YawMode(False, 270))
+                elif count == 1:
+                    vx = -speed
+                    vy = 0
+                    # straight
+                    print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=180")
+                    client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
+                                                airsim.YawMode(False, 180))
+                time.sleep(1)
+            elif point==1:
+                z = -10
+                if count == 0:
+                    vx = 0
+                    vy = -speed
+                    # turn left
+                    print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=270")
+                    client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
+                                                airsim.YawMode(False, 270))
+                elif count == 1:
+                    vx = speed
+                    vy = 0
+                    # straight
+                    print("moving by velocity vx=" + str(vx) + ", vy=" + str(vy) + ", yaw=0")
+                    client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
+                                                airsim.YawMode(False, 0))
+                time.sleep(1)
             count += 1
         else:
-            print("moving by Position")
+            count=0
             x = client.getMultirotorState().kinematics_estimated.position.x_val
             y = client.getMultirotorState().kinematics_estimated.position.y_val
-
-            if -122<float(x) and float(x)<-120 and -122<float(y) and float(y) <-119:
+            print(x,y)
+            if -108<float(x) and float(x)<-102 and -83<float(y) and float(y) <-77:
                 point=1
                 move = True
-            elif float(x) <-185 and float(x)>-186 and float(y) > -13 and float(y) <-14:
-                point=2
-                move = True
-            elif float(x) < 140.5 and float(x) > 140 and float(y) < 48.5 and float(y) > 48:
-                point = 3
-                move = True
-            elif float(x) < 106.5 and float(x) > 106 and float(y) > -97.5 and float(y) < -98:
+            elif 99>float(x) >94 and  -107<float(y) <-100:
                 client.landAsync().join()
+                client.armDisarm(False)
+                client.reset()
+                # let's quit cleanly
+                client.enableApiControl(False)
             if move==True:
                 move=False
                 if point ==0:
                     print("point 1")
-                    x1= -121.9201431274414
-                    y1=-120.98756408691406
+                    x1= -105.86600494384766
+                    y1=-79.34103393554688
                     dgree = 180+math.degrees(math.atan((y - y1) / (x - x1)))
                     client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
                 elif point==1:
                     print("point 2")
-                    x1= -185.52687072753906
-                    y1= -13.707509994506836
-                    dgree = 180+math.degrees(math.atan((y - y1) / (x - x1)))
+                    x1=  95.15351867675781
+                    y1= -104.22108459472656
+                    dgree = math.degrees(math.atan((y - y1) / (x - x1)))
                     client.moveToPositionAsync(x1, y1, z, speed ,yaw_mode=airsim.YawMode(False, dgree))
-                elif point==2:
-                    print("point 3")
-                    x1= 140.02157592773438
-                    y1= 48.068817138671875
-                    dgree = math.degrees(math.atan((y - y1) / (x - x1)))
-                    print(dgree)
-                    client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
-                elif point==3:
-                    print("point 4")
-                    x1= 106.04059600830078
-                    y1= -97.93598175048828
-                    dgree = math.degrees(math.atan((y - y1) / (x - x1)))
-                    print(dgree)
-                    client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
-
-    airsim.wait_key('Press any key to reset to original state')
-    client.armDisarm(False)
-    client.reset()
-
-    # let's quit cleanly
-    client.enableApiControl(False)
 # main
 if __name__ == "__main__":
     client = airsim.MultirotorClient()
     Escape_algorithm()
-
-    # 3
-    # <Vector3r> {   'x_val': 140.02157592773438,
-    #     'y_val': 48.068817138671875,
-    #     'z_val': -19.981088638305664}
-
-    # 2
-    # <Vector3r> {   'x_val': -185.52687072753906,
-    #     'y_val': -13.707509994506836,
-    #     'z_val': -19.98116683959961}
-
-    # 1
-    # <Vector3r> {   'x_val': -118.46541595458984,
-    #     'y_val': -122.095947265625,
-    #     'z_val': -19.98649787902832}
