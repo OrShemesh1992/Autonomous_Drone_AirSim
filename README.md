@@ -106,11 +106,9 @@
 
 ## How to use the project:
 
-
-
-
-
-
+1. download "Forest" map  from: https://github.com/microsoft/AirSim/releases/tag/v.1.2.2
+2. run Forest.exe 
+3. python Drone_Auto.py
 
 ## Sources:
 
