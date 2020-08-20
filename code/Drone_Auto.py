@@ -180,7 +180,7 @@ def Escape_algorithm():
                     client.moveByVelocityZAsync(vx, vy, z, duration, airsim.DrivetrainType.MaxDegreeOfFreedom,
                                                 airsim.YawMode(False, 180))
                 time.sleep(1)
-            elif point==1:
+            elif point==1 or point ==2:
                 z = -10
                 if count == 0:
                     vx = 0
@@ -206,6 +206,9 @@ def Escape_algorithm():
             if -108<float(x) and float(x)<-102 and -83<float(y) and float(y) <-77:
                 point=1
                 move = True
+            elif -12<float(x) <-6 and  -110<float(y) <-100:
+                point=2
+                move = True
             elif 99>float(x) >94 and  -107<float(y) <-100:
                 client.landAsync().join()
                 client.armDisarm(False)
@@ -222,6 +225,12 @@ def Escape_algorithm():
                     client.moveToPositionAsync(x1, y1, z, speed, yaw_mode=airsim.YawMode(False, dgree))
                 elif point==1:
                     print("point 2")
+                    x1=  -8.556684494018555
+                    y1= -105.05833435058594
+                    dgree = math.degrees(math.atan((y - y1) / (x - x1)))
+                    client.moveToPositionAsync(x1, y1, z, speed ,yaw_mode=airsim.YawMode(False, dgree))
+                elif point==2:
+                    print("point 3")
                     x1=  95.15351867675781
                     y1= -104.22108459472656
                     dgree = math.degrees(math.atan((y - y1) / (x - x1)))
@@ -230,3 +239,7 @@ def Escape_algorithm():
 if __name__ == "__main__":
     client = airsim.MultirotorClient()
     Escape_algorithm()
+
+    # <Vector3r> {   'x_val': -8.556684494018555,
+    #     'y_val': -105.05833435058594,
+    #     'z_val': -19.987041473388672}
