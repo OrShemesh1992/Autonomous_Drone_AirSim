@@ -1,5 +1,4 @@
 # Autonomous Drone AirSim
-[![image](https://user-images.githubusercontent.com/44946807/90861471-75d85c00-e394-11ea-9225-5efeb75d3a8e.png)](https://youtu.be/6S4gl-BVppg)
 ![image](https://user-images.githubusercontent.com/44946807/90451881-84edae80-e0f5-11ea-9e40-d4ef2afff62b.png)
 
 
@@ -104,6 +103,9 @@
       
 - We then treated each box as an object and calculated for each box the distance from the drone using the depth images. With the help of these calculations the algorithm the 
   object that has great potential to collide with the drone.
+  
+## Video
+[![image](https://user-images.githubusercontent.com/44946807/90861471-75d85c00-e394-11ea-9225-5efeb75d3a8e.png)](https://youtu.be/6S4gl-BVppg)
 
 ## How to use the project:
 
